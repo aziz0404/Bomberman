@@ -1,0 +1,194 @@
+Etape une faire deux fichier 
+
+Main c => vérifier que l'environnement compile
+pour utiliser SDL vérifier si 'lon a les fichiers propre a la SDL (au minimum) => 
+- libSDL2.a
+- //SDL2.dll.a
+- //SDL2.la
+- //SDL2_image.a
+- //SDL2_test.a
+- //SDL2.ttf.a
+- //SDL2_main.a
+et les include (en SDL qui permet d'utiliser le programme)
+
+Crée un fichier qui va contenir les fonctions du jeu fichier ".h"
+game.h
+
+include "game.h"
+
+Structure qui va inclure tout les structure du jeu. Tip ->toute inclure dans le ".h"
+inclure aussi les structures
+
+Définir les structure du jeu
+typedef struc {
+    //Variable de la SDL
+    SDL_Point screenSize;
+    SDL_Window* pWindow;
+    SDL_Renderer* pRenderer;
+
+    //Texture
+    SDL_Texture* pTextPlayer
+
+    //jeu
+    SDL_Rect playerPositionRect;
+
+} stGame;
+
+stGame* game_init(); //initialiser une première fenêtre de la SDl , FONCTION QUI INITLISATE la librairie
+et la structure du jeu video et la retourne
+void game_destroy(); /:permet de détruire du jeu (retourne la mémoire)
+void game_draw(stGame* game)
+void game_draw(stGame* game);
+int game_event(stFame* game)
+
+sur le fichier game.c
+
+stGame* game = Null;
+game = malloc(sizeof(stGame));
+game->screenSize.x = 640;
+game->screenSize.y = 480;
+game->pWindow = Null
+game->pRenderer = Null
+game->pTextPlayer = Null
+game->playerPositionRect.x = game->screenSize.x/2
+game->playerPositionRect.y = game->screenSize.y/2
+game->playerPositionRect.w = 50;
+game->playerPositionRect.h = 60;
+
+
+stGame* game_init() {
+    //initialisation de la SDL
+    if (SDL_Init(SDL_INIT_VIDEO))!= 0) {
+        fprint(stderr, "impossible d'initialiser la SDL : %s\n", SDL_GetError)
+        game_destroy(game) //detruit ce qui a été crée
+        return NULL (ne continue pas le programme)
+    }
+}
+//Création de la fenetre
+game->pWindow = SDL_CreateWindow("Mario", SDL_WINDOWPOS_UNDEFINED, SDL_WINWODPOS_UNDEFINED,
+game->screenSize.x, game->screenSize.y, SDL_WINDOW_SHOWN);
+if(game->pWindow) {
+    //Créer le Renderer
+    pRenderergame->pRenderer = SDL_CreateRenderer(game->pWindow, -1, SDL_RENDERER_ACCELERATED);
+    if(!game->pRenderer) {
+        fprint(sterr, "impossible de crée le renderer SDL : %s\n", SDL_GetError())
+        game_destroy(game)
+        return NULL
+    }
+}else {
+    fprint(sterr, "impossible de crée la fenetre SDL : %s\n", SDL_GetError())
+        game_destroy(game)
+        return NULL
+}
+}
+
+// Chargement d'un texture (différence avec les surface)
+SDL_Surface* surfaceMario = IMG_Load("./mario.png")
+if (!surfaceMario)
+    fprintf(stderr, "Impossible de charger l'image ./mario.png ! %s\n", IMG_GetError())
+    game_destroy(game)
+    return NULL
+} else {
+    game->pTextPlayer = SDL_CreateTextureFromSurface(game-pRenderer, surfaceMario)
+    if (!game->pTextPlayer)
+    fprintf(sterr, "Erreur de traitement de la texture :%s\n", SDL_GetError())
+    game_destroy(game)
+    return NULL
+}
+SDL_FreeSurface(surfaceMario)
+
+return game;
+}
+/**
+ *Détruit le jeu
+ *@param game
+ *
+  */
+
+void game_destroy(stGame* game){
+    if (game) {
+        
+        if (game->pTextPlayer) {
+            SDL_DestroyTexture(game(>pTextPlayer))
+        }
+
+        if (game->pRenderer) {
+            SDL_DestroyWindow(game->pRenderer)
+        }
+    if (game) {
+        if (game->pWindow) {
+            SDL_DestroyWindow(game->pWindow)
+        }
+    }
+
+    SDL_Quit();
+    free(game);
+}
+
+/**
+ *Détruit le jeu
+ *@param game
+ *
+ */
+void game_draw(stGame* game){
+    //netoyer l'ecran
+    SDL_SetRenderDrawColor(game->pRenderer, 0, 0, 0, 255)
+    SDL_RenderClear(game->pRenderer)
+
+    //Afficher le joueur
+    SDL_RenderCopy(game->pRenderer, game->pTextPlayer, NULL, &game->playerPositionRect)
+
+    // présenter le rendu
+    SDL_RenderPresent(game->pRenderer)
+
+   // SDL_Event e
+    //SDL_PollEvent(&e)
+    //SDL_DELay(3000)
+}
+/**
+ * Gestion des event
+ * @param game
+  * return - 1 pour quitter
+  */
+
+int game_event(stGame* game) {
+ int result = 0
+ SDL_Event e;
+ if(SDL_PollEvent(&e)) {
+     if(e.type == SDL_Quit){
+         //quitter l'application 
+         result =-1
+     } else if (e.type == SDL_KEYDOWN) {
+         //gerer les touches du clavier
+         switch(e.key.keysym.sym)
+         case SDLK_ESCAPE
+            //quitter l'application
+            result =-1
+            break
+        default
+            fprintf(sterr, "touche inconnu %d\n", e.)
+     }
+     }
+ }
+ return result
+}
+
+fichier Main
+
+int Main(int argc, char** argv) {
+    stGame *game =game_init();
+    
+    int quit = 0
+    while(quit != -1) {
+
+        game_draw(game)
+        quit = game_event(game)
+    }
+    
+    game_destroy(game)
+    return(EXIT_SUCCESS)
+}
+
+Après compilation il n'a pas trouve les fonction sdl (erreur de linkage si utilisation d'ide comme dans la video
+)
+effectuer un test et si tout est ok continuer
